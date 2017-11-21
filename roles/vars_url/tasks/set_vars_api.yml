@@ -1,0 +1,16 @@
+- name: get variables from api host "{{ hostname }}"
+  uri: 
+
+
+
+- name: get dns server location for devel
+  set_fact:
+  - ipaddr1: "{{ json.content }}"
+  - ipaddr2: "{{ json.content }}"
+  - ipaddr3: "{{ json.content }}"
+  - network1: "{{ json.content }}"
+  - network2: "{{ json.content }}"
+  - network3: "{{ json.content }}"
+  - netmask1: '255.255.255.0'
+  - netmask2: '255.255.255.0'
+  - netmask3: '255.255.255.0'
