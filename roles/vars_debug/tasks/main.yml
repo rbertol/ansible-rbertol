@@ -1,0 +1,15 @@
+- name: Include vars foo.
+  include_vars: foo.yml
+  when: variable is defined and variable == 'foo'
+
+- name: Include vars lala.
+  include_vars: lala.yml
+  when: variable is defined and variable == 'lala'
+
+- name: Include vars hello.
+  include_vars: hello.yml
+  when: variable is defined and variable == 'hello'
+
+- name: Display foo variables.
+  debug:
+    var: foo
