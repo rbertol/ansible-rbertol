@@ -4,7 +4,7 @@
     return_content: yes
   register: json
 
-- name: get dns server location for devel
+- name: get variables server from api.
   set_fact:
     ipaddr1: "{{ json.content | from_json |json_query('IP_Maquina[0]') }}"
     ipaddr2: "{{ json.content | from_json |json_query('IP_Branca[0]') }}"
@@ -12,38 +12,47 @@
     network1: "{{ json.content | from_json |json_query('L2') }}"
     network2: "{{ json.content | from_json |json_query('L3_Branca') }}"
     network3: "{{ json.content | from_json |json_query('L3_Backup') }}"
-    netmask1: '255.255.255.0'
-    netmask2: '255.255.255.0'
-    netmask3: '255.255.255.0'
+    netmask1: "{{ json.content | from_json |json_query('Network') | ipaddr('netmask') }}"
+    netmask2: "{{ json.content | from_json |json_query('Network_Branca') | ipaddr('netmask') }}"
+    netmask3: "{{ json.content | from_json |json_query('Network_Backup') | ipaddr('netmask') }}"
+    gateway: "{{ json.content | from_json |json_query('Network') | ipaddr('net') | ipaddr('1') | ipaddr('address') }}"
 
-- name: set gateway
-  set_fact:
-    gateway: "{{ ipaddr1.split('.')[0] }}.{{ ipaddr1.split('.')[1] }}.{{ ipaddr1.split('.')[2] }}.1"
-
-- name: debug json
+- name: debug json ipaddr1
   debug:
     var: ipaddr1
 
-- name: debug json
+- name: debug json ipaddr2
   debug:
     var: ipaddr2
 
-- name: debug json
+- name: debug json ipaddr3
   debug:
     var: ipaddr3
 
-- name: debug json
+- name: debug json netmask1
+  debug:
+    var: netmask1
+
+- name: debug json netmask2
+  debug:
+    var: netmask2
+
+- name: debug json netmask3
+  debug:
+    var: netmask3
+
+- name: debug json network1
   debug:
     var: network1 
 
-- name: debug json
+- name: debug json network2
   debug:
     var: network2 
 
-- name: debug json
+- name: debug json network3
   debug:
     var: network3
 
-- name: debug json
+- name: debug json gateway
   debug:
     var: gateway 
