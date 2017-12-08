@@ -1,0 +1,13 @@
+---
+- name: Hello World!
+  hosts: all
+ 
+  tasks:
+ 
+  - name: Check SSH
+    shell: "echo Hello World"
+
+  - name: Hello World!
+    debug: 
+      msg: 'Hello World!!! 
+      Server {{ ansible_hostname }}'
