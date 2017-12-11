@@ -1,0 +1,22 @@
+---
+- name: Call Jobs
+  hosts: all
+ 
+  tasks:
+ 
+  - name: Execute job create disk /data
+    tower_job_launch:
+      tower_host: http://ansible.acme.local
+      tower_verify_ssl: false
+      tower_password: redhat123
+      tower_username: admin
+      job_template: "Hello World"
+      extra_vars:
+        - lala: lele
+        - foo: bar
+    register: job
+
+  - name: Wait for job {{ job.id }} max 120s
+    tower_job_wait:
+      job_id: job.id
+      timeout: 120
