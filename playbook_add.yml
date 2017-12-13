@@ -15,7 +15,7 @@
       msg: 'Hello World!!! Server {{ ansible_hostname }}'
 
   - debug: 
-    msg: '{{ name }}'
+    msg: '{{ guestname }}'
 
 #  - name: Create new vm host group and add host
 #    add_host:
