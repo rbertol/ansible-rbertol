@@ -16,7 +16,11 @@
   - name: Create new vm host group and add host
     add_host:
       name: "client01"
-  
+
+- name: replace inventory
+  hosts: {{ name }}
+  tasks:
+
   - name: Check SSH
     shell: "echo Hello World"
 
