@@ -20,6 +20,8 @@
 #  - name: Create new vm host group and add host
 #    add_host:
 #      name: "client01"
+  - gather_facts: true
+    delegate_to: '{{ guestname }}'
 
   - name: Check SSH
     shell: "echo Hello World"
