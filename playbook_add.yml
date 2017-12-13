@@ -1,0 +1,25 @@
+---
+- name: Playbook Add new host in same playbook
+  hosts: all
+  vars:
+    foo: foo
+    lala: lala
+  tasks:
+ 
+  - name: Check SSH
+    shell: "echo Hello World"
+
+  - name: Hello World!
+    debug: 
+      msg: 'Hello World!!! Server {{ ansible_hostname }} var foo={{ foo }} var lala={{ lala }}'
+
+  - name: Create new vm host group and add host
+    add_host:
+      name: "client01"
+  
+  - name: Check SSH
+    shell: "echo Hello World"
+
+  - name: Hello World!
+    debug: 
+      msg: 'Hello World!!! Server {{ ansible_hostname }} var foo={{ foo }} var lala={{ lala }}'
