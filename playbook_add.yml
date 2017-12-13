@@ -4,6 +4,7 @@
   vars:
     foo: foo
     lala: lala
+    name: client01
   tasks:
  
   - name: Check SSH
