@@ -4,7 +4,6 @@
   vars:
     foo: foo
     lala: lala
-    name: client01
   tasks:
  
   - name: Check SSH
@@ -13,6 +12,9 @@
   - name: Hello World!
     debug: 
       msg: 'Hello World!!! Server {{ ansible_hostname }}'
+
+  - debug: 
+    msg: '{{ name }}'
 
   - name: Create new vm host group and add host
     add_host:
