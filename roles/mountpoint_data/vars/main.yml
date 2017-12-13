@@ -1,0 +1,12 @@
+new_disk:       # Device a ser adicionado ao VG
+  - '/dev/sdb'
+new_mntp:       # Diretório que será o mountpoint
+  - '/data'
+create_vgname:  # Nome do VG a ser criado
+  - 'vg_data'
+create_lvname:  # Nome do LV a ser criado no VG
+  - 'lv_data' 
+create_lvsize:  # Ajuste do tamanho do LV criado
+  - '100%FREE' 
+filesystem:     # Tipo de filesystem a ser formatado o LV e montado o
+  - 'xfs'  

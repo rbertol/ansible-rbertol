@@ -1,6 +1,6 @@
 ---
 - uri:
-    url: http://ansible.acme.local:81/index.json
+    url: http://ansible.acme.local:81/index.html
     return_content: yes
   register: json
 
@@ -9,55 +9,51 @@
     ipaddr1: "{{ json.content | from_json |json_query('IP_Maquina[0]') }}"
     ipaddr2: "{{ json.content | from_json |json_query('IP_Branca[0]') }}"
     ipaddr3: "{{ json.content | from_json |json_query('IP_Backup[0]') }}"
-    network1: "{{ json.content | from_json |json_query('L2') |int }}"
-    network2: "{{ json.content | from_json |json_query('L3_Branca') |int }}"
-    network3: "{{ json.content | from_json |json_query('L3_Backup') |int }}"
+    vlan1: "{{ json.content | from_json |json_query('VLAN') }}"
+    vlan2: "{{ json.content | from_json |json_query('VLAN_Branca') }}"
+    vlan3: "{{ json.content | from_json |json_query('VLAN_Backup') }}"
     netmask1: "{{ json.content | from_json |json_query('Network') | ipaddr('netmask') }}"
     netmask2: "{{ json.content | from_json |json_query('Network_Branca') | ipaddr('netmask') }}"
     netmask3: "{{ json.content | from_json |json_query('Network_Backup') | ipaddr('netmask') }}"
     gateway: "{{ json.content | from_json |json_query('Network') | ipaddr('net') | ipaddr('1') | ipaddr('address') }}"
     machines: "{{ json.content | from_json |json_query('machines.id') }}"
 
-#- name: debug json ipaddr1
-#  debug:
-#    var: ipaddr1
-#
-#- name: debug json ipaddr2
-#  debug:
-#    var: ipaddr2
-#
-#- name: debug json ipaddr3
-#  debug:
-#    var: ipaddr3
-#
-#- name: debug json netmask1
-#  debug:
-#    var: netmask1
-#
-#- name: debug json netmask2
-#  debug:
-#    var: netmask2
-#
-#- name: debug json netmask3
-#  debug:
-#    var: netmask3
-#
-- name: debug json network1
+- name: debug json ipaddr1
   debug:
-    var: network1 
+    var: ipaddr1
 
-- name: debug json network2
+- name: debug json ipaddr2
   debug:
-    var: network2 
+    var: ipaddr2
 
-- name: debug json network3
+- name: debug json ipaddr3
   debug:
-    var: network3
-#
-#- name: debug json gateway
-#  debug:
-#    var: gateway 
+    var: ipaddr3
 
-- name: debug
+- name: debug json netmask1
   debug:
-    var: "{{ json.content | from_json |json_query('L2') |int }}"
+    var: netmask1
+
+- name: debug json netmask2
+  debug:
+    var: netmask2
+
+- name: debug json netmask3
+  debug:
+    var: netmask3
+
+- name: debug json vlan1
+  debug:
+    var: vlan1 
+
+- name: debug json vlan2
+  debug:
+    var: vlan2 
+
+- name: debug json vlan3
+  debug:
+    var: vlan3
+
+- name: debug json gateway
+  debug:
+    var: gateway 
