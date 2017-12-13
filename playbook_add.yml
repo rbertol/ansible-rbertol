@@ -4,6 +4,7 @@
   vars:
     foo: foo
     lala: lala
+    guestname: client01
   tasks:
  
   - name: Check SSH
@@ -16,15 +17,15 @@
   - debug: 
     msg: '{{ name }}'
 
-  - name: Create new vm host group and add host
-    add_host:
-      name: "client01"
+#  - name: Create new vm host group and add host
+#    add_host:
+#      name: "client01"
 
   - name: Check SSH
     shell: "echo Hello World"
-    delegate_to: '{{ name }}'
+    delegate_to: '{{ guestname }}'
 
   - name: Hello World!
     debug: 
       msg: 'Hello World!!! Server {{ ansible_hostname }}'
-    delegate_to: '{{ name }}'
+    delegate_to: '{{ guestname }}'
