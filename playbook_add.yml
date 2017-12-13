@@ -17,13 +17,11 @@
     add_host:
       name: "client01"
 
-- name: replace inventory
-  hosts: '{{ name }}'
-  tasks:
-
   - name: Check SSH
     shell: "echo Hello World"
+    delegate_to: '{{ name }}'
 
   - name: Hello World!
     debug: 
       msg: 'Hello World!!! Server {{ ansible_hostname }}'
+    delegate_to: '{{ name }}'
