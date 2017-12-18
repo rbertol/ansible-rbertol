@@ -1,0 +1,13 @@
+- name: get disk
+  hosts: all
+
+  tasks:
+
+    - set_fact: disks={{ hostvars[inventory_hostname]['ansible_devices'] }}
+      register: disk_la
+
+    - parted: device=/dev/{{ item }} unit=MiB
+      register: '{{ item }}_info'
+      with_items: "{{ disk_la.ansible_facts.disks | regex_search('^[v|s|xv]d[a-z].*')}"
+
+    - debug: var='{{ item }}_info'

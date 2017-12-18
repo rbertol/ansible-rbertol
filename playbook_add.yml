@@ -1,34 +1,9 @@
 ---
 - name: Playbook Add new host in same playbook
   hosts: all
-#  gather_facts: no
   vars:
     foo: foo
     lala: lala
     guestname: client01
-  tasks:
- 
-  - name: Check SSH
-    shell: "echo Hello World"
-
-  - name: Hello World!
-    debug: 
-      msg: 'Hello World!!! Server {{ ansible_hostname }}'
-
-  - debug: 
-    msg: '{{ guestname }}'
-
-#  - name: Create new vm host group and add host
-#    add_host:
-#      name: "client01"
-  - setup:
-    delegate_to: '{{ guestname }}'
-
-  - name: Check SSH
-    shell: "echo Hello World"
-    delegate_to: '{{ guestname }}'
-
-  - name: Hello World!
-    debug: 
-      msg: 'Hello World!!! Server {{ ansible_hostname }}'
-    delegate_to: '{{ guestname }}'
+  roles:
+    - add

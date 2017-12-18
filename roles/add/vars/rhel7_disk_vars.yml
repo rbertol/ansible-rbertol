@@ -1,0 +1,6 @@
+new_disk: '/dev/vdb'
+new_mntp: '/data'
+create_vgname: 'vg_data'
+create_lvname: 'lv_data' 
+create_lvsize: '100%FREE' 
+filesystem: 'xfs'  

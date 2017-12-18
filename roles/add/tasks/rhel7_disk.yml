@@ -1,0 +1,57 @@
+- include_vars: rhel7_disk_vars.yml
+
+- name: Create partition
+  parted:
+    device: '{{ new_disk }}'
+    number: 1
+    state: present
+  delegate_to: '{{ new_server }}'
+
+- name: Criar VG
+  lvg:
+    vg: '{{ create_vgname }}'
+    pvs: '{{ new_disk }}1'
+    state: present
+  delegate_to: '{{ new_server }}'
+
+- name: Check File system exist
+  stat:
+    path: '/dev/{{ create_vgname }}/{{ create_lvname }}'
+  register: disk_status
+  delegate_to: '{{ new_server }}'
+
+- name: Criar LV
+  lvol:
+    vg: '{{ create_vgname }}'
+    lv: '{{ create_lvname }}'
+    size: '{{ create_lvsize }}'
+  when: disk_status.stat.exists == false
+  delegate_to: '{{ new_server }}'
+
+- name: Criar o FS no LV
+  filesystem:
+    fstype: '{{ filesystem }}'
+    dev: '/dev/{{ create_vgname }}/{{ create_lvname }}'
+  delegate_to: '{{ new_server }}'
+
+- name: Create {{ new_mntp }}
+  file:
+    path: '{{ new_mntp }}'
+    state: directory
+  delegate_to: '{{ new_server }}'
+
+- name: Create fstab file
+  mount:
+    name: '{{ new_mntp }}'
+    src: '/dev/{{ create_vgname }}/{{ create_lvname }}'
+    fstype: '{{ filesystem }}'
+    state: present
+  delegate_to: '{{ new_server }}'
+
+- name: Montar o FS
+  mount:
+    name: '{{ new_mntp }}'
+    src: '/dev/{{ create_vgname }}/{{ create_lvname }}'
+    fstype: '{{ filesystem }}'
+    state: mounted
+  delegate_to: '{{ new_server }}'

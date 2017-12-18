@@ -1,0 +1,23 @@
+- name: Check SSH
+  shell: "echo Hello World"
+
+- name: Hello World!
+  debug:
+    msg: 'Hello World!!! Server {{ ansible_hostname }}'
+
+- debug:
+  var: guestname
+
+- setup:
+  delegate_to: '{{ guestname }}'
+
+- name: Check SSH
+  shell: "echo Hello World"
+  delegate_to: '{{ guestname }}'
+
+- name: Hello World!
+  debug:
+    msg: 'Hello World!!! Server {{ ansible_hostname }}'
+  delegate_to: '{{ guestname }}'
+
+- include: rhel7_disk.yml

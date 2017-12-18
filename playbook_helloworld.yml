@@ -9,6 +9,9 @@
   - name: Check SSH
     shell: "echo Hello World"
 
+  - name: Sleep to test running parallel jobs.
+    wait_for: timeout=300
+
   - name: Hello World!
     debug: 
       msg: 'Hello World!!! Server {{ ansible_hostname }} var foo={{ foo }} var lala={{ lala }}'
