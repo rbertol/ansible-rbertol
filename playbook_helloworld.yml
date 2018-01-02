@@ -1,9 +1,9 @@
 ---
 - name: Hello World!
   hosts: all
-  vars:
-    foo: foo
-    lala: lala
+#  vars:
+#    foo: foo
+#    lala: lala
   tasks:
  
   - name: Check SSH
@@ -11,4 +11,4 @@
 
   - name: Hello World!
     debug: 
-      msg: 'Hello World!!! Server {{ ansible_hostname }} var foo={{ foo }} var lala={{ lala }}'
+      msg: "Hello World!!! Server {{ ansible_hostname }} var foo={{ lookup('env', 'foo') }} var lala={{ lookup('env', 'lala') }}"
