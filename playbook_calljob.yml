@@ -1,6 +1,6 @@
 ---
 - name: Call Jobs
-  hosts: localhost
+  hosts: all
   vars:
     hostname_server: client01
     default_organization: ACME
@@ -14,7 +14,7 @@
     shell: /usr/bin/tower-cli host create -n {{ hostname_server }}.acme.local -i {{ hostname_server }}
 
   - name: exec job {{ job_template }}
-    shell: /usr/bin/tower-cli job launch --wait --job-template {{ job_template }} --inventory {{ hostname_server }}
+    shell: /usr/bin/tower-cli job launch --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }}
 
   - name: delete host
     shell: /usr/bin/tower-cli host delete -n {{ hostname_server }}.acme.local
