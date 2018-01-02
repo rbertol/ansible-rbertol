@@ -10,7 +10,7 @@
     shell: /usr/bin/tower-cli host create -n {{ hostname_server }}.acme.local -i {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
 
   - name: exec job {{ job_template }}
-    shell: /usr/bin/tower-cli job launch --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
+    shell: /usr/bin/tower-cli job launch --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }} -e "foo={{ bar }} bar={{ foo }} lala={{ lele }}"
 
   - name: delete host
     shell: /usr/bin/tower-cli host delete -n {{ hostname_server }}.acme.local -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
