@@ -1,23 +1,19 @@
 ---
 - name: Call Jobs
   hosts: all
-  vars:
-    hostname_server: client01
-    default_organization: ACME
-    job_template: Hello World
   tasks:
  
   - name: create inventory
-    shell: /usr/bin/tower-cli inventory create -n {{ hostname_server }} --organization {{ default_organization }} -u tower_cli -p {{ tower_password }}
+    shell: /usr/bin/tower-cli inventory create -n {{ hostname_server }} --organization {{ default_organization }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
 
   - name: create host and join host to inventory
-    shell: /usr/bin/tower-cli host create -n {{ hostname_server }}.acme.local -i {{ hostname_server }} -u tower_cli -p {{ tower_password }}
+    shell: /usr/bin/tower-cli host create -n {{ hostname_server }}.acme.local -i {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
 
   - name: exec job {{ job_template }}
-    shell: /usr/bin/tower-cli job launch --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }} -u tower_cli -p {{ tower_password }}
+    shell: /usr/bin/tower-cli job launch --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
 
   - name: delete host
-    shell: /usr/bin/tower-cli host delete -n {{ hostname_server }}.acme.local -u tower_cli -p {{ tower_password }}
+    shell: /usr/bin/tower-cli host delete -n {{ hostname_server }}.acme.local -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
 
   - name: delete inventory
-    shell: /usr/bin/tower-cli inventory delete -n {{ hostname_server }} -u tower_cli -p {{ tower_password }}
+    shell: /usr/bin/tower-cli inventory delete -n {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
