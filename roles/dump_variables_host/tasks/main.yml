@@ -1,0 +1,4 @@
+- name: send all variables to file
+  template: 
+    src: dumpall.j2
+    dest: /tmp/.{{ hostname_server }}-vars.json

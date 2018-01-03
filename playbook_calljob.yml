@@ -3,7 +3,7 @@
   hosts: all
 
   roles:
-    - dumpall
+    - dump_variables_host
 
   tasks:
  
@@ -13,13 +13,17 @@
   - name: create host and join host to inventory
     shell: /usr/bin/tower-cli host create -n {{ hostname_server }}.acme.local -i {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
  
-      #msg: "{{ hostvars['client01'] }}"
 
   - name: exec job {{ job_template }}
-    shell: /usr/bin/tower-cli job launch --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }} --extra-vars="@/tmp/ansible.all"
+    shell: /usr/bin/tower-cli job launch -v --wait --job-template '{{ job_template }}' --inventory {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }} --extra-vars=@/tmp/.{{ hostname_server }}-vars.json
 
   - name: delete host
     shell: /usr/bin/tower-cli host delete -n {{ hostname_server }}.acme.local -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
 
   - name: delete inventory
     shell: /usr/bin/tower-cli inventory delete -n {{ hostname_server }} -u {{ tower_user }} -p {{ tower_password }} -h {{ tower_host }}
+
+  - name: delete vars
+    file: 
+      path: "/tmp/.{{ hostname_server }}-vars.json"
+      state: absent
