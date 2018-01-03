@@ -11,4 +11,4 @@
 
   - name: Hello World!
     debug: 
-      msg: "Hello World!!! Server {{ ansible_hostname }} var foo={{ lookup('env', 'foo') }} var lala={{ lookup('env', 'lala') }}"
+      msg: "Hello World!!! Server {{ ansible_hostname }} var foo={{ foo }} var lala={{ lala }}"
