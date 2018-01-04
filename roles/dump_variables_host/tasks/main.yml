@@ -1,3 +1,7 @@
+- name: replace vars
+  set_fact:
+    host_vars: "{{ hostvars[inventory_hostname] | to_json }}"
+
 - name: send all variables to file
   template: 
     src: dumpall.j2
