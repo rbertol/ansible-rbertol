@@ -58,10 +58,10 @@ def run_module():
         safe=dict(type='str', required=True),
         platform=dict(type='str', required=True),
         address=dict(type='str', required=True),
+        description=dict(type='str', required=False),
         cyberark_host=dict(type='str', required=True),
         cyberark_username=dict(type='str', required=True),
-        cyberark_password=dict(type='str', required=True),
-        description=dict(type='str', required=False)
+        cyberark_password=dict(type='str', required=True)
     )
 
     result = dict(
@@ -85,7 +85,7 @@ def run_module():
     token=response.json()
     auth=token['CyberArkLogonResult']
 
-    api='https://'+module.params['cyberark_host']+'/PasswordVault/WebServices/PIMServices.svc/Accounts?Keywords='+module.params['name']+'&Safe='+module.params['safe']
+    api='https://'+module.params['cyberark_host']+'/PasswordVault/WebServices/PIMServices.svc/Accounts?Keywords='+module.params['name']+'+'+module.params['address']+'+'+module.params['platform']+'&Safe='+module.params['safe']
     headers={'content-type': 'application/json', 'Authorization': auth}
     response=requests.get(api, headers=headers, verify=False)
     account=response.json()
@@ -98,18 +98,18 @@ def run_module():
         response=requests.get(api, headers=headers, verify=False)
         criamaquina=response.status_code
         password=response.text
-        message='Account '+module.params['name']+' already exist.'
+        message='Account '+module.params['name']+' already exist to address '+module.params['address']+' in plataform '+module.params['platform']+'.'
         changed=False
 
     if count_exist == 0:
         password=randompassword()
         url='https://'+module.params['cyberark_host']+'/PasswordVault/WebServices/PIMServices.svc/Account'
         headers={'content-type': 'application/json', 'Authorization': auth}
-        payload={'account' : {'safe':module.params['safe'],'platformID':module.params['platform'],'address':module.params['address'],'accountName':module.params['name'],'password':password,'username':module.params['name'],'disableAutoMgmt':'true','disableAutoMgmtReason':module.params['description']}}
+        payload={'account' : {'safe':module.params['safe'],'platformID':module.params['platform'],'address':module.params['address'],'password':password,'username':module.params['name'],'disableAutoMgmt':'true','disableAutoMgmtReason':module.params['description']}}
         response=requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
         criamaquina=response.status_code
         changed=True
-        message='Account '+module.params['name']+' created successfully.'
+        message='Account '+module.params['name']+' created successfully to address '+module.params['address']+' in plataform '+module.params['platform']+'.'
 
     api='https://'+module.params['cyberark_host']+'/PasswordVault/WebServices/auth/Cyberark/CyberArkAuthenticationService.svc/Logoff'
     headers={'content-type': 'application/json', 'Authorization': auth}
