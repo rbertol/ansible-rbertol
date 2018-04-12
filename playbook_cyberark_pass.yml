@@ -1,0 +1,22 @@
+---
+- name: Playbook to create pass at CyberARK
+  connection: local
+  gather_facts: false
+  hosts: localhost
+  tasks:
+
+  - name: Create cyberark password in safe.
+    cyberark_password:
+      name: "root@safemachine.acme.local"
+      safe: "{{ cyberark_safe }}"
+      platform: "{{ cyberark_platform }}"
+      address: "safemachine.acme.local"
+      cyberark_username: "{{ cyberark_user_login }}"
+      cyberark_password: "{{ cyberark_pass_login }}"
+      cyberark_host: cyberark.acme.local
+      description: "{{ cyberark_account_description }}"
+    register: cyberark_result
+
+  - name: show password and state account exist or was created.
+    debug:
+      msg: '{{ cyberark_result }}'
