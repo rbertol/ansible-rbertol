@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 ANSIBLE_METADATA = {
-    'metadata_version': '0.1',
+    'metadata_version': '0.2',
     'status': ['preview'],
     'supported_by': 'community'
 }
@@ -17,27 +17,97 @@ version_added: "2.4"
 description:
     - "This module get a password in CyberARK Vault, this module was created to get integration with CyberARK, some adjust can be required"
 
+options:
+    name:
+        description:
+            - This is the name of username account that will be created in CyberARK Safe
+        required: true
+    safe:
+        description:
+            - The safe tha account password will be saved.
+        required: true
+    plataform:
+        description:
+            - Plataform Name created in CyberARK, It's a rule that will be applied at this password.
+        required: true
+    address:
+        description:
+            - The address that will be used a password genereted.
+        required: true
+    password:
+        description:
+            - Password that will be created in username and address saved in Safe.
+            - If password variable wasn't set, a random password will be genereted.
+        required: false
+    description:
+        description:
+            - A simple description of password.
+        required: false
+    cyberark_host:
+        description:
+            - IP Address or Hostname of CyberARK.
+        required: true
+    cyberark_username:
+        description:
+            - Username of CyberARK.
+        required: true
+    cyberark_password:
+        description:
+            - Password of User.
+        required: true
+
 author:
-    - Rudnei Bertol Junior (@rbertol) <rudneibertol@gmail.com>
+    - Rudnei Bertol Junior <rudneibertol@gmail.com>
 '''
 
 EXAMPLES = '''
-- name: create account in cyberark if this account not exists.
+### Simple example to create account in CyberARK Safe if account doesn't exists
+- name: Create account 
   cyberark_password:
-    name: 'pass_acme_root'
+    name: 'root'
     safe: 'ACME'
     platform: 'ssh_user_noch'
-    address: 'acme.local
+    address: 'machine.acme.local
     cyberark_username: 'user_cyberark_access'
     cyberark_password: "pass_cyberark_access"
     cyberark_host: "cyberark.acme.com.br'
-    description: "small description of password"
+    description: "Small description of password"
+
+### Example to generate a unique password externaly and use that to create multiples accounts in CyberARK Safe if accounts don't exists.
+- name: Generate a new random password.
+  set_fact:
+    random_password: "{{ lookup('password', '/tmp/null chars=ascii_letters,digits,hexdigits') }}"
+
+- name: Create cyberark password in safe.
+  cyberark_password:
+    name: "root"
+    safe: "ACME"
+    platform: "ssh_user_noch"
+    address: "{{ item }}"
+    password: "{{ random_password }}"
+    cyberark_username: 'user_cyberark_access'
+    cyberark_password: "pass_cyberark_access"
+    cyberark_host: "cyberark.acme.com.br'
+    description: "Small description of password"
+  register: cyberpass
+  with_items:
+    - machine1.acme.local
+    - machine2.acme.local
+    - machine3.acme.local
+
+- name: Create variable with new password.
+  set_fact:
+    password: "{{ cyberpass.results[0].password }}"
+
+- name: Show Password from CyberARK
+  debug: var=password
+
 '''
 
 RETURN = '''
 message:
     description: The output message with sucessfully password created or already exists.
-user_password:
+password:
     description: Password saved in CyberARK..
 '''
 
@@ -58,6 +128,7 @@ def run_module():
         safe=dict(type='str', required=True),
         platform=dict(type='str', required=True),
         address=dict(type='str', required=True),
+        password=dict(type='str', required=False),
         description=dict(type='str', required=False),
         cyberark_host=dict(type='str', required=True),
         cyberark_username=dict(type='str', required=True),
@@ -96,18 +167,21 @@ def run_module():
         api='https://'+module.params['cyberark_host']+'/PasswordVault/WebServices/PIMServices.svc/Accounts/'+getid+'/Credentials'
         headers={'content-type': 'application/json', 'Authorization': auth}
         response=requests.get(api, headers=headers, verify=False)
-        criamaquina=response.status_code
+        response_result=response.status_code
         password=response.text
         message='Account '+module.params['name']+' already exist to address '+module.params['address']+' in plataform '+module.params['platform']+'.'
         changed=False
 
     if count_exist == 0:
-        password=randompassword()
+        if module.params['password']:
+		password=module.params['password']
+	else:
+		password=randompassword()
         url='https://'+module.params['cyberark_host']+'/PasswordVault/WebServices/PIMServices.svc/Account'
         headers={'content-type': 'application/json', 'Authorization': auth}
         payload={'account' : {'safe':module.params['safe'],'platformID':module.params['platform'],'address':module.params['address'],'password':password,'username':module.params['name'],'disableAutoMgmt':'true','disableAutoMgmtReason':module.params['description']}}
         response=requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
-        criamaquina=response.status_code
+        response_result=response.status_code
         changed=True
         message='Account '+module.params['name']+' created successfully to address '+module.params['address']+' in plataform '+module.params['platform']+'.'
 
@@ -119,27 +193,27 @@ def run_module():
     result['message']=message
     result['password']=password
 
-    if criamaquina == 400:
+    if response_result == 400:
         module.fail_json(msg='The request could not be understood by the server due to incorrect syntax.')
     module.exit_json(**result)
 	
-    if criamaquina == 401:
+    if response_result == 401:
         module.fail_json(msg='The request requires user authentication.')
     module.exit_json(**result)
 	
-    if criamaquina == 403:
+    if response_result == 403:
         module.fail_json(msg='The server received and understood the request, but will not fulfill it. Authorization will not help and the request MUST NOT be repeated.')
     module.exit_json(**result)
 	
-    if criamaquina == 404:
+    if response_result == 404:
         module.fail_json(msg='The server did not find anything that matches the Request-URI. No indication is given of whether the condition is temporary or permanent.')
     module.exit_json(**result)
 	
-    if criamaquina == 409:
+    if response_result == 409:
         module.fail_json(msg='The request could not be completed due to a conflict with the current state of the resource.')
     module.exit_json(**result)
 
-    if criamaquina == 500:
+    if response_result == 500:
         module.fail_json(msg='The server encountered an unexpected condition which prevented it from fulfilling the request.')
     module.exit_json(**result)
 	
@@ -151,4 +225,4 @@ def main():
     run_module()
 
 if __name__ == '__main__':
-    main()
+    ain()
