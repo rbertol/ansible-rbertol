@@ -12,6 +12,7 @@ foreman_initial_location: 'Roadrunner'
 manifest_path: /root
 manifest_name: "manifest_satellite_{{ satellite_version }}.zip"
 cv_name: "cv_rhel7_base"
+satellite_package_version: "satellite"
 
 firewall_services:
   - ssh
@@ -23,7 +24,7 @@ firewall_ports:
   - 8443/tcp
 
 packages_list:
-  - satellite
+  - "{{ satellite_package_version }}*"
   - wget
   - git
   - bash-completion

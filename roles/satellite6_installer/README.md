@@ -18,7 +18,7 @@ cat playbook_install_sat.yml
   vars:
     rhsm_user: 'ROOT_USER'
     rhsm_password: 'MYSUPERPASS'
-    satellite_package_version: "satellite-6.3.3*"
+    satellite_package_version: "satellite-6.3.3"
     satellite_version: "6.3"
     manifest_name: "my_super_manifest.zip"
   roles:
@@ -49,7 +49,7 @@ i.e: `satellite_version=6.3` to configure the repositories to Satellite 6.3
 
 ### satellite_package_version
 Satellite package name 
-i.e: To install Satellite 6.3.2 use `satellite_package_version="satellite-6.3.2*"` for the latest z-stream version use `"satellite_package_version=satellite"`
+i.e: To install Satellite 6.3.2 use `satellite_package_version="satellite-6.3.2"` for the latest z-stream version use `"satellite_package_version=satellite"`
 
 ### foreman_admin_password
 Satellite default admin password.
