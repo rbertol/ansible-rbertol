@@ -1,6 +1,31 @@
-## Documentation of this role
+## Propose of this role
 
-How to use this role.
+This role was created to install and configure a Satellite 6 server
+
+## What this role do.
+
+- Register the server to the RHSM customer portal.
+- Configure a Satellite subscription.
+- Configure the Satellite repositories.
+  Note: Satellite 6.2 is installed with Puppet 3, Satellite 6.3 is installed with Puppet 4 and Satellite 6.5 with Puppet 5.
+- Enable the satellite services in the firewall.
+- Update the machine.
+- Install the Satellite packages.
+- Install the Satellite with the default parameters.
+- Import the manifest to the Satellite.
+- Update the manifest with the customer portal.
+- Configure the packages default policy to on_demand
+- Enable the Red Hat Enterprise Linux 7 kickstart on the Satellite Server.
+- Enable the Red Hat Enterprise Linux 7 products on the Satellite Server.
+- Enable the Red Hat Satellite Tools for 7 Server.
+- Synchronize all repositories.
+- Create Dev, QA and Prod lifecycle environment.
+- Create a content view and add the repositories into.
+- Publish the content view to the environments Dev, QA and Prod
+- Create four activation keys one for each environment Library, Dev, QA and Prod
+
+
+## How to use this role.
 
 - 1) Go to the customer portal and generate a manifest.
 
