@@ -7,7 +7,7 @@
   no_log: yes
 
 - name: registration | Get Satellite pool ID
-  shell: /usr/bin/subscription-manager list --all --available --matches="*Satellite*" | awk '/Pool ID/ {print $3}' | head -1
+  shell: /usr/bin/subscription-manager list --all --available --matches="Red Hat Satellite" | awk '/Pool ID/ {print $3}' | head -1
   tags:
     - rhsm
   register: pool_id
