@@ -23,3 +23,11 @@
     owner: root
     group: root
     mode: 0644
+  register: haproxy_file
+
+- name: restart haproxy service
+  systemd:
+    name: haproxy
+    state: restarted
+    enabled: yes
+  when: haproxy_file.changed
