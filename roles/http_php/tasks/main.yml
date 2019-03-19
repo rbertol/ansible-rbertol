@@ -1,0 +1,20 @@
+- name: install httpd and php packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - httpd
+    - php
+
+- name: start httpd service
+  systemd:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: open httpd service on firewalld
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+    immediate: true
