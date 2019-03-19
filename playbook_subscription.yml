@@ -1,7 +1,0 @@
----
-- name: Configure the Satellite Subscription
-  hosts: all
-  vars:
-    satellite_hostname: temsat.acme.local
-  roles:
-    - subscription
