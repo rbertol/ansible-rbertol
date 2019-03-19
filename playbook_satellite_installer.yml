@@ -1,7 +1,0 @@
----
-- name: main | Deploying Satellite Server
-  hosts: all
-  vars:
-    rhsm_password: 'CHANGEME'
-  roles:
-    - satellite6_installer
