@@ -5,3 +5,8 @@
     state: present
   become: yes
   with_items: "{{ groups.all }}"
+
+  lineinfile:
+    dest: /etc/hosts
+    line: "192.168.122.194 canes.acme.local canes"
+    state: present
