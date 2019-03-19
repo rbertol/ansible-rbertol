@@ -1,0 +1,21 @@
+---
+- name: all playbook
+  hosts: all
+  serial: 1
+  tasks:
+  - haproxy:
+      state: disabled
+      host: '{{ inventory_hostname }}'
+      backend: http_web
+      socket: /var/run/haproxy.sock
+      shutdown_sessions: true
+    delegate_to: lb.acme.local
+
+  - haproxy:
+      state: enabled
+      host: '{{ inventory_hostname }}'
+      backend: http_web
+      socket: /var/run/haproxy.sock
+      shutdown_sessions: true
+    delegate_to: lb.acme.local
+

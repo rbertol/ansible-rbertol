@@ -1,0 +1,25 @@
+- name: install haproxy package
+  yum:
+    name: haproxy
+    state: present
+
+- name: start haproxy service
+  systemd:
+    name: haproxy
+    state: started
+    enabled: yes
+
+- name: open httpd service on firewalld
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+    immediate: true
+
+- name: send the haproxy config file.
+  template: 
+    src: haproxy.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: 0644
