@@ -2,7 +2,8 @@
 - name: all playbook
   hosts: all
   vars:
-    data_raw_size: "40.00 GB"
+    data_raw_size: "20.00 GB"
+    arch_raw_size: "20.00 GB"
   tasks:
 
   - set_fact: 
@@ -11,60 +12,75 @@
   - set_fact:
       usable_disks: "{{ disks |select('match', '^(s|v)d+') | list }}"
 
-  - parted: 
-      device: "/dev/{{ item }}"
-      unit: GiB
-    register: data_disk
-    when: ansible_devices.{{ item }}.size == "{{ data_raw_size }}" 
-    with_items:
-      - "{{ usable_disks }}"
-
-  - parted: 
-      device: "/dev/{{ item }}"
-      unit: GiB
-    register: arch_disk
-    when: ansible_devices.{{ item }}.size == "{{ arch_raw_size }}" 
-    with_items:
-      - "{{ usable_disks }}"
-
-  - parted: 
-      device: "/dev/{{ item }}"
-      unit: GiB
-    register: data_aux_disk
-    when: ansible_devices.{{ item }}.size == "{{ data_aux_raw_size }}" 
-    with_items:
-      - "{{ usable_disks }}"
-
   - set_fact: 
-      data_disk_size="{{ data_disk |json_query('results[*].disk.size ')| string | regex_replace('\.+0', '') }}"
-      data_disk_name="{{ data_disk |json_query('results[*].disk.dev')}}"
-
-  - set_fact: 
-      data_partition_size="{{ data_disk_size[0] | regex_replace('\.+0', '')| int / 4 }}"
+      data_raw_disk_name: "{{ item }}"
+    when: 
+      - "ansible_devices.{{ item }}.partitions.keys() |list | length <= 0"
+      - ansible_devices.{{ item }}.size == "{{ data_raw_size }}"
+    with_items:
+      - "{{ usable_disks }}"
 
   - parted:
-      device: "{{ data_disk_name[0] }}"
+      device: "/dev/{{ data_raw_disk_name }}"
       number: 1
       state: present
-      part_end: "{{ data_partition_size |int }}GiB"
+      part_end: 25%
 
   - parted:
-      device: "{{ data_disk_name[0] }}"
+      device: "/dev/{{ data_raw_disk_name }}"
       number: 2
       state: present
-      part_start: "{{ data_partition_size |int }}GiB"
-      part_end: "{{ data_partition_size |int * 2 }}GiB"
+      part_start: 25%
+      part_end: 50%
 
   - parted:
-      device: "{{ data_disk_name[0] }}"
+      device: "/dev/{{ data_raw_disk_name }}"
       number: 3
       state: present
-      part_start: "{{ data_partition_size |int * 2 }}GiB"
-      part_end: "{{ data_partition_size |int * 3 }}GiB"
+      part_start: 50%
+      part_end: 75%
 
   - parted:
-      device: "{{ data_disk_name[0] }}"
+      device: "/dev/{{ data_raw_disk_name }}"
       number: 4
       state: present
-      part_start: "{{ data_partition_size |int * 3 }}GiB"
+      part_start: 75%
+      part_end: 100%
+
+  - name: Collect only facts returned by facter
+    setup:
+
+  - set_fact: 
+      arch_raw_disk_name: "{{ item }}"
+    when: 
+      - "ansible_devices.{{ item }}.partitions.keys() |list | length <= 0"
+      - ansible_devices.{{ item }}.size == "{{ arch_raw_size }}"
+    with_items:
+      - "{{ usable_disks }}"
+
+  - parted:
+      device: "/dev/{{ arch_raw_disk_name }}"
+      number: 1
+      state: present
+      part_end: 25%
+
+  - parted:
+      device: "/dev/{{ arch_raw_disk_name }}"
+      number: 2
+      state: present
+      part_start: 25%
+      part_end: 50%
+
+  - parted:
+      device: "/dev/{{ arch_raw_disk_name }}"
+      number: 3
+      state: present
+      part_start: 50%
+      part_end: 75%
+
+  - parted:
+      device: "/dev/{{ arch_raw_disk_name }}"
+      number: 4
+      state: present
+      part_start: 75%
       part_end: 100%
