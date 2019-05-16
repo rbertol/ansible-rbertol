@@ -140,7 +140,7 @@ def create_manifest(module):
             'type': "satellite",
             # TODO: Make these 2 configurable, we need to work out which horribly
             # undocumented API to use.
-            'facts': {'distributor_version': 'sat-6.3',
+            'facts': {'distributor_version': module.params['satellite_version'],
                       'system.certificate_version': '3.2'}}
     resp, info = fetch_portal(module, path, 'POST', data)
     return json.loads(to_text(resp.read()))
@@ -261,6 +261,7 @@ def main():
             path=dict(type='path'),
             validate_certs=dict(default=True, type='bool'),
             portal=dict(default='https://subscription.rhn.redhat.com'),
+            satellite_version=dict(default='sat-6.5', type='str'),
         ),
         required_one_of=[['name', 'uuid']],
         supports_check_mode=True,
