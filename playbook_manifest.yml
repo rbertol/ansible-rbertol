@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+
+  tasks:
+
+  - name: Create Manifest and add subs
+    redhat_manifest:
+      name: "my_subscription_name"
+      username: "myrhn-user"
+      password: "CHANGEME"
+      pool_id: 8a85f9833e1404a9013e3cddf95a0599
+      quantity: 2
+      validate_certs: false
+      satellite_version: 'sat-6.5'
+      path: /root/my_subscription_name.zip
