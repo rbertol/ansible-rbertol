@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+  become_method: sudo
+  vars:
+    machine:
+      username: '{{ ansible_user }}'
+      password: '{{ ansible_password }}'
+  task:
+    - debug: 
+      msg: "My pass: {{ password }} My user: {{ username }}"
