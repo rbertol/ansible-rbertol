@@ -1,0 +1,32 @@
+- hosts: all
+  gather_facts: false 
+  vars:
+      db_username: '{{ db_username }}'
+      db_password: '{{ db_password }}'
+      db_host: '{{ db_host }}'
+      db_name: '{{ db_name }}'
+  tasks:
+    - name: Get size consumption of db {{ db_name }}
+      community.postgresql.postgresql_query:
+        db: '{{ db_name }}'
+        login_user: '{{ db_username }}'
+        login_password: '{{ db_password }}'
+        login_host: '{{ db_host }}'
+        query: "SELECT table_name, pg_size_pretty(total_bytes) AS total
+      , pg_size_pretty(index_bytes) AS INDEX
+      , pg_size_pretty(toast_bytes) AS toast
+      , pg_size_pretty(table_bytes) AS TABLE
+    FROM (
+    SELECT *, total_bytes-index_bytes-COALESCE(toast_bytes,0) AS table_bytes FROM (
+        SELECT c.oid,nspname AS table_schema, relname AS TABLE_NAME
+                , c.reltuples AS row_estimate
+                , pg_total_relation_size(c.oid) AS total_bytes
+                , pg_indexes_size(c.oid) AS index_bytes
+                , pg_total_relation_size(reltoastrelid) AS toast_bytes
+            FROM pg_class c
+            LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+            WHERE relkind = 'r'
+    ) a
+  ) a order by total_bytes DESC LIMIT 30;"
+   register: db_query
+  - debug: var=db_query 
