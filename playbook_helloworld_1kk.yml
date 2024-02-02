@@ -11,5 +11,5 @@
 
   - name: Hello World!
     debug: 
-      msg: "Hello World!!! Server {{ ansible_hostname }} var foo={{ foo.lolo }}"
+      msg: "Hello World!!! Server {{ ansible_hostname }} var foo={{ foo.lolo }} {{ awx_execution_node }}"
     loop: "{{ range(1, 40000) | list }}"
