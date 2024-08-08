@@ -9,8 +9,6 @@
         port: 5000
 
   rules:
-    # When the message "say-hello" is sent in the "town-square" channel,
-    # run the "Say Hello" job template
     - name: Say hello
       condition: >
         event.payload.channel_name == "town-square"
@@ -24,7 +22,7 @@
       condition: event.message is defined
       action:
         run_job_template:
-          name: eda
+          name: Demo Job Template
           organization: Default
           post_events: true
           job_args:
